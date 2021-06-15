@@ -1,10 +1,12 @@
 ---
 layout: post
-title:  "Welcome to Jekyll!"
-date:   2020-08-29 09:29:20 +0700
-categories: jekyll update
+title:  "My first post (again) 🦾"
+date:   2021-06-16 09:29:20 +0700
+categories: non-tech
 ---
-You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run `jekyll serve`, which launches a web server and auto-regenerates your site when a file is updated.
+
+I am once again rebuilding my website, but this time, I'll stick with this theme, I promise!
+I'll leave these instructions here for when I forget them, feel free to copy this theme for your own website :D
 
 Jekyll requires blog post files to be named according to the following format:
 
@@ -14,12 +16,16 @@ Where `YEAR` is a four-digit number, `MONTH` and `DAY` are both two-digit number
 
 Jekyll also offers powerful support for code snippets:
 
-{% highlight ruby %}
+{% highlight python %}
 def print_hi(name)
-  puts "Hi, #{name}"
-end
-print_hi('Tom')
-#=> prints 'Hi, Tom' to STDOUT.
+  set_here = {'a','b','c'}
+  d = {1:2,2:2}
+  d[1] = 1 # mumbo jumbo
+  d = set(set_here)
+  print(f"Hi, {name}")
+
+print_hi('Arin')
+#=> prints 'Hi, Arin' to STDOUT.
 {% endhighlight %}
 
 Check out the [Jekyll docs][jekyll-docs] for more info on how to get the most out of Jekyll. File all bugs/feature requests at [Jekyll’s GitHub repo][jekyll-gh]. If you have questions, you can ask them on [Jekyll Talk][jekyll-talk].
