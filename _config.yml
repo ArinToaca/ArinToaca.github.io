@@ -23,7 +23,7 @@ author:
 
 # URL settings
 url: "https://arintoaca.github.io/" #
-baseurl:
+baseurl: /ArinToaca.github.io
 permalink: /:title/
 google_analytics: UA-162549012-1 # leave it blank if not wish
 fb_appid:
