@@ -104,7 +104,7 @@ dls.valid.show_batch(max_n=4, nrows=1)
 
 
     
-![png](assets/img/02_arin/02_arin_13_0.png)
+![png](https://i.ibb.co/Wprv5Y9/02-arin-13-0.png)
     
 
 
@@ -124,7 +124,7 @@ dls.valid.show_batch(max_n=4, nrows=1)
 
 
     
-![png](assets/img/02_arin/02_arin_15_0.png)
+![png](https://i.ibb.co/Z6kgSjR/02-arin-15-0.png)
     
 
 
@@ -139,7 +139,7 @@ dls.train.show_batch(max_n=4, nrows=1, unique=True)
 
 
     
-![png](assets/img/02_arin/02_arin_17_0.png)
+![png](https://i.ibb.co/Gc0DMvn/02-arin-17-0.png)
     
 
 
@@ -264,7 +264,7 @@ interp.plot_confusion_matrix()
 
 
     
-![png](assets/img/02_arin/02_arin_23_1.png)
+![png](https://i.ibb.co/JFx0KWN/02-arin-23-1.png)
     
 
 
@@ -279,7 +279,7 @@ interp.plot_top_losses(5, nrows=1)
 
 
     
-![png](assets/img/02_arin/02_arin_25_0.png)
+![png](https://i.ibb.co/M5tvrPx/02-arin-25-0.png)
     
 
 
