@@ -270,7 +270,7 @@ interp.plot_confusion_matrix()
 
 ### Data cleaning through model feedback
 
-Now this right here is what made me a true believe in fastAI and it's usecase in commercial ML applications. By training a model and simply highlighting the top losses, we might detect outliers in the dataset. These outliers are very likely mislabeled data points, eliminating them can significantly improve the model's performance. In hindsight this seems like an obvious usecase of the Neural Network, but us ML people get very hung up about architectures and such, while we should focus more on improving the data in a smarter way.
+Now this right here is what made me a true believe in fastAI and its usecase in commercial ML applications. By training a model and simply highlighting the top losses, we might detect outliers in the dataset. These outliers are very likely mislabeled data points, eliminating them can significantly improve the model's performance. In hindsight this seems like an obvious usecase of the Neural Network, but us ML people get very hung up about architectures and such, while we should focus more on improving the data in a smarter way.
 
 
 ```python

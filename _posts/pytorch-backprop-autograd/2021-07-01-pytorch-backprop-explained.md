@@ -82,7 +82,7 @@ We will try to fit synthetic data (we generate it instead of mining it from some
 For example think of using a video game to generate violent footage in order to train a video classification network on the recorded video footage. Unless you are a psychopath, generating violent footage in real life is not a possibility...
 
 
-*Psychopath generating data for it's violence detection aglorithm*  🔪🔪
+*Psychopath generating data for its violence detection aglorithm*  🔪🔪
 
 ![psycho_gif](https://media.giphy.com/media/zXKA3p9aR3u7u/source.gif)
 
