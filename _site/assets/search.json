@@ -1,9 +1,16 @@
 [
   
     {
-      "title"    : "Fast Ai Journey 1",
+      "title"    : "Pytorch Backprop Explained",
       "tags"     : "",
-      "url"      : "/fast-ai-journey-1/",
+      "url"      : "/pytorch-backprop-explained/",
+      "date"     : "2021-07-01 00:00:00 +0300"
+    } ,
+  
+    {
+      "title"    : "Fast Ai Image Classification",
+      "tags"     : "",
+      "url"      : "/fast-ai-image-classification/",
       "date"     : "2021-06-24 00:00:00 +0300"
     } 
   

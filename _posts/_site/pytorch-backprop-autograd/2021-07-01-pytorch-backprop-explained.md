@@ -20,7 +20,7 @@ matplotlib.rc('image', cmap='Greys')
 Automatic gradient computation makes modern backpropagation in machine learning possible.
 This `autograd` mechanism in Pytorch traces tensors and the operations done on them. By using this tracing, Pytorch understands how to extract the partial derivative of every parameter with respect to another (in our case, the partial derivative of the cost function with respect to the "weights" of the network). These gradients are then used to update the weights, which contributes to better "fitting" of those parameters with respect to some data points.
 
-Let's take a basic function to demonstrate, $$ f(x)=x^2 $$
+Let's take a basic function to demonstrate, $ f(x)=x^2 $
 
 
 ```python
@@ -52,7 +52,7 @@ yt
 As you can see, `grad_fn` of the pytorch tensor symbolizes that yt is dependent on some sort of `Pow(er)` function (as in x to the power of 2)
 
 We calculate the gradient of `xt` with respect to `yt` at that certain point, the function tracked by PyTorch is
-$$y_{t} = x_{t}^{2}$$ and the partial derivative is $$ \frac{\partial x_{t}}{\partial y_{t}} = 2x$$
+$y_{t} = x_{t}^{2}$ and the partial derivative is $ \frac{\partial x_{t}}{\partial y_{t}} = 2x$
 
 
 ```python
@@ -67,15 +67,15 @@ xt.grad # output it
 
 
 
-Which indeed it is! $$ 2x_{x=2}=4 $$
+Which indeed it is! $ 2x_{x=2}=4 $
 
 ### The Learning: SGD
 
 And so the actual learning of a Neural Network is being done by using the same type of gradient, but at a larger scale. The gradient is used to point to the direction of steepest **ascent** (will increase the loss). Since we wish to minimize the loss, we subtract the gradient and go in the opposite direction, we **descend**.
-This is done many times in order to reach (hopefully) the global minima of the loss function with respect to $$W$$, we call this **learning**
-$$$$ W -= \alpha * gradient(W) $$$$
+This is done many times in order to reach (hopefully) the global minima of the loss function with respect to $W$, we call this **learning**
+$$ W -= \alpha * gradient(W) $$
 
-where $$\alpha$$ is the learning rate which expresses *magnitude* and `gradient(W)` is the *direction*, choose a learning rate that is too small, the model will learn very slowly if at all, choose a learning rate that is too big, and you overshoot so much in the direction you will never "land" in the spot of global minima. In practice you will see the loss barely decreasing with a small $$\alpha$$, and increasing widly with a big $$\alpha$$.
+where $\alpha$ is the learning rate which expresses *magnitude* and `gradient(W)` is the *direction*, choose a learning rate that is too small, the model will learn very slowly if at all, choose a learning rate that is too big, and you overshoot so much in the direction you will never "land" in the spot of global minima. In practice you will see the loss barely decreasing with a small $\alpha$, and increasing widly with a big $\alpha$.
 
 ### Generating data: 
 We will try to fit synthetic data (we generate it instead of mining it from somewhere as seen in the first tutorial). The example here is a very simple one, but synthetic data can be used in any field with any type of data, provided you are creative enough.
@@ -123,7 +123,7 @@ params = torch.randn(3).requires_grad_()
 orig_params = params.clone()
 ```
 
-We then compute the "predictions" of $$f(t)$$ at the same timesteps (same t parameter) in order to compare the predictions to the above-generated data, also known as ground truth.
+We then compute the "predictions" of $f(t)$ at the same timesteps (same t parameter) in order to compare the predictions to the above-generated data, also known as ground truth.
 
 
 ```python

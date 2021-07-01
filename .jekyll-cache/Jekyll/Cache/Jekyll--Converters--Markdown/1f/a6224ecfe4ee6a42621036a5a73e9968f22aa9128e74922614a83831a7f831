@@ -1,0 +1,191 @@
+I"�N<h1 id="backprop--autograd-in-pytorch-explained">Backprop &amp; Autograd in PyTorch Explained</h1>
+
+<p>This post is another in my series of things I find interesting about fastAI’s course.
+As most (more or less) self-taught ML folk I started with Andrew Ng’s <a href="https://www.coursera.org/learn/machine-learning">Machine Learning Course</a>
+One of the hardest assignments in that course was to implement Stochastic Gradient Descent, in Octave. While finishing that exercise was rewarding, the modern autograd mechanism is a little bit different, since we do not compute the derivatives by hand anymore.
+In short, below I will try to explain SGD, the whole idea of function minimization, and how it relates to Deep Learning below.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># hide
+</span><span class="kn">import</span> <span class="nn">fastbook</span>
+<span class="n">fastbook</span><span class="p">.</span><span class="n">setup_book</span><span class="p">()</span>
+<span class="kn">from</span> <span class="nn">fastai.vision.all</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">fastbook</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">matplotlib</span><span class="p">.</span><span class="n">rc</span><span class="p">(</span><span class="s">'image'</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s">'Greys'</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h3 id="autograd-in-pytorch">Autograd in Pytorch</h3>
+
+<p>Automatic gradient computation makes modern backpropagation in machine learning possible.
+This <code class="language-plaintext highlighter-rouge">autograd</code> mechanism in Pytorch traces tensors and the operations done on them. By using this tracing, Pytorch understands how to extract the partial derivative of every parameter with respect to another (in our case, the partial derivative of the cost function with respect to the “weights” of the network). These gradients are then used to update the weights, which contributes to better “fitting” of those parameters with respect to some data points.</p>
+
+<p>Let’s take a basic function to demonstrate, \(f(x)=x^2\)</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span>
+</code></pre></div></div>
+
+<h3 id="activating-the-autograd-mechanism-in-pytorch">Activating the autograd mechanism in PyTorch.</h3>
+<p>Thus we wish to extract the gradient, but we first need to signal to Pytorch that we wish to do this with <code class="language-plaintext highlighter-rouge">requires_grad</code></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">xt</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="mf">2.</span><span class="p">).</span><span class="n">requires_grad_</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">yt</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">xt</span><span class="p">)</span>
+<span class="n">yt</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tensor(4., grad_fn=&lt;PowBackward0&gt;)
+</code></pre></div></div>
+
+<p>As you can see, <code class="language-plaintext highlighter-rouge">grad_fn</code> of the pytorch tensor symbolizes that yt is dependent on some sort of <code class="language-plaintext highlighter-rouge">Pow(er)</code> function (as in x to the power of 2)</p>
+
+<p>We calculate the gradient of <code class="language-plaintext highlighter-rouge">xt</code> with respect to <code class="language-plaintext highlighter-rouge">yt</code> at that certain point, the function tracked by PyTorch is
+\(y_{t} = x_{t}^{2}\) and the partial derivative is \(\frac{\partial x_{t}}{\partial y_{t}} = 2x\)</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">yt</span><span class="p">.</span><span class="n">backward</span><span class="p">()</span> <span class="c1"># compute the derivative of yt with respect to all the tensors it depends on
+</span><span class="n">xt</span><span class="p">.</span><span class="n">grad</span> <span class="c1"># output it
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tensor(4.)
+</code></pre></div></div>
+
+<p>Which indeed it is! \(2x_{x=2}=4\)</p>
+
+<h3 id="the-learning-sgd">The Learning: SGD</h3>
+
+<p>And so the actual learning of a Neural Network is being done by using the same type of gradient, but at a larger scale. The gradient is used to point to the direction of steepest <strong>ascent</strong> (will increase the loss). Since we wish to minimize the loss, we subtract the gradient and go in the opposite direction, we <strong>descend</strong>.
+This is done many times in order to reach (hopefully) the global minima of the loss function with respect to \(W\), we call this <strong>learning</strong>
+\(\) W -= \alpha * gradient(W) \(\)</p>
+
+<p>where \(\alpha\) is the learning rate which expresses <em>magnitude</em> and <code class="language-plaintext highlighter-rouge">gradient(W)</code> is the <em>direction</em>, choose a learning rate that is too small, the model will learn very slowly if at all, choose a learning rate that is too big, and you overshoot so much in the direction you will never “land” in the spot of global minima. In practice you will see the loss barely decreasing with a small \(\alpha\), and increasing widly with a big \(\alpha\).</p>
+
+<h3 id="generating-data">Generating data:</h3>
+<p>We will try to fit synthetic data (we generate it instead of mining it from somewhere as seen in the first tutorial). The example here is a very simple one, but synthetic data can be used in any field with any type of data, provided you are creative enough.
+For example think of using a video game to generate violent footage in order to train a video classification network on the recorded video footage. Unless you are a psychopath, generating violent footage in real life is not a possibility…</p>
+
+<p><em>Psychopath generating data for it’s violence detection aglorithm</em>  🔪🔪</p>
+
+<p><img src="https://media.giphy.com/media/zXKA3p9aR3u7u/source.gif" alt="psycho_gif" /></p>
+
+<p>Since we are not adventureous, we’ll just be generating some datapoints of a quadratic-looking function, while generating some noise</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">time</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">20</span><span class="p">).</span><span class="nb">float</span><span class="p">();</span> <span class="n">time</span>
+<span class="n">speed</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span><span class="o">*</span><span class="mi">3</span> <span class="o">+</span> <span class="mf">0.75</span><span class="o">*</span><span class="p">(</span><span class="n">time</span><span class="o">-</span><span class="mf">9.5</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span>
+<span class="n">plt</span><span class="p">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">time</span><span class="p">,</span><span class="n">speed</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;matplotlib.collections.PathCollection at 0x7feee219ca60&gt;
+</code></pre></div></div>
+
+<p><img src="https://i.ibb.co/9yPmJ5H/04-arin-13-1.png" alt="png" /></p>
+
+<p>And our goal is to generate a function that fits those datapoints</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+    <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span> <span class="o">=</span> <span class="n">params</span>
+    <span class="k">return</span> <span class="n">a</span><span class="o">*</span><span class="p">(</span><span class="n">t</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">b</span><span class="o">*</span><span class="n">t</span><span class="p">)</span> <span class="o">+</span> <span class="n">c</span>
+</code></pre></div></div>
+
+<p>We initialize the parameters <code class="language-plaintext highlighter-rouge">(a,b,c)</code> of the quadratic expression with <code class="language-plaintext highlighter-rouge">torch.randn</code></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">params</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">3</span><span class="p">).</span><span class="n">requires_grad_</span><span class="p">()</span>
+<span class="n">orig_params</span> <span class="o">=</span> <span class="n">params</span><span class="p">.</span><span class="n">clone</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>We then compute the “predictions” of \(f(t)\) at the same timesteps (same t parameter) in order to compare the predictions to the above-generated data, also known as ground truth.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">preds</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">show_preds</span><span class="p">(</span><span class="n">preds</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span> <span class="n">ax</span><span class="o">=</span><span class="n">plt</span><span class="p">.</span><span class="n">subplots</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">ax</span><span class="p">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">speed</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">to_np</span><span class="p">(</span><span class="n">preds</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s">'red'</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="o">-</span><span class="mi">300</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>As you can see, we did not win the RNG lottery, and the parameters <code class="language-plaintext highlighter-rouge">(a,b,c)</code> we randomly generated do not “fit” the datapoints, they’re actually pretty far off</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">show_preds</span><span class="p">(</span><span class="n">preds</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p><img src="https://i.ibb.co/jvfy8b2/04-arin-22-0.png" alt="png" /></p>
+
+<p>But <strong>how</strong> bad are these randomly generated parameters?
+Enter the loss function, which in our case is the mean squared distance between “predicted” and “generated” datapoints</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">mse</span><span class="p">(</span><span class="n">preds</span><span class="p">,</span> <span class="n">targets</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">((</span><span class="n">preds</span><span class="o">-</span><span class="n">targets</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">).</span><span class="n">mean</span><span class="p">().</span><span class="n">sqrt</span><span class="p">()</span>
+<span class="n">loss</span> <span class="o">=</span> <span class="n">mse</span><span class="p">(</span><span class="n">preds</span><span class="p">,</span> <span class="n">speed</span><span class="p">)</span>
+<span class="n">loss</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tensor(160.6979, grad_fn=&lt;SqrtBackward&gt;)
+</code></pre></div></div>
+
+<p>Now let’s do some the spicy backprop magic with <code class="language-plaintext highlighter-rouge">backward</code>
+What does backward do?
+Basically when we call <code class="language-plaintext highlighter-rouge">backward</code> on a tensor, PyTorch intelligently computes the partial derivative of that tensor with respect to every tensor that it <strong>depends</strong> on (which tensors were used in computing this end tensor).</p>
+
+<p>And so in this context <code class="language-plaintext highlighter-rouge">params.grad</code> basically means “the partial derivative of <code class="language-plaintext highlighter-rouge">loss</code> with respect to <code class="language-plaintext highlighter-rouge">params</code>” or more formally:
+\(\frac{\partial loss}{\partial params}\)</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">loss</span><span class="p">.</span><span class="n">backward</span><span class="p">()</span>
+<span class="n">params</span><span class="p">.</span><span class="n">grad</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tensor([-165.5151,  -10.6402,   -0.7900])
+</code></pre></div></div>
+
+<p>As we know, the gradient points to the location of steepest ascent, if we subtract it, we descend.
+We do this in order to find the minima of the loss function with respect to our quadratic function params.</p>
+
+<p>Basically we are doing backprop! Still confused? <a href="https://www.youtube.com/watch?v=tIeHLnjs5U8">Watch this example on a simple Dense Network</a></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">lr</span> <span class="o">=</span> <span class="mf">1e-3</span>
+<span class="n">params</span><span class="p">.</span><span class="n">data</span> <span class="o">-=</span> <span class="n">lr</span> <span class="o">*</span> <span class="n">params</span><span class="p">.</span><span class="n">grad</span><span class="p">.</span><span class="n">data</span>
+<span class="n">params</span><span class="p">.</span><span class="n">grad</span> <span class="o">=</span> <span class="bp">None</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">preds</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+<span class="n">mse</span><span class="p">(</span><span class="n">preds</span><span class="p">,</span><span class="n">speed</span><span class="p">)</span>
+<span class="n">show_preds</span><span class="p">(</span><span class="n">preds</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p><img src="https://i.ibb.co/Dg3BKdq/04-arin-29-0.png" alt="png" /></p>
+
+<p>We can formalize all these steps in the below-defined function then!</p>
+<ul>
+  <li>we extract the “predictions” of our approximated quadratic</li>
+  <li>we measure how far off we are (loss)</li>
+  <li>we compute the gradient of this loss with respect to our approximation</li>
+  <li>we update the approximation (this is the learning itself folks!)
+And this is called an <code class="language-plaintext highlighter-rouge">epoch</code></li>
+</ul>
+
+<p>We repeat these steps until it’s not worth it anymore, in practice we stop once we either overfit (this learning does not translate well to data the model has not seen before) or we underfit (the model cannot fit the data better)</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">apply_step</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">prn</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="n">preds</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="n">mse</span><span class="p">(</span><span class="n">preds</span><span class="p">,</span> <span class="n">speed</span><span class="p">)</span>
+    <span class="n">loss</span><span class="p">.</span><span class="n">backward</span><span class="p">()</span>
+    <span class="n">params</span><span class="p">.</span><span class="n">data</span> <span class="o">-=</span> <span class="n">lr</span> <span class="o">*</span> <span class="n">params</span><span class="p">.</span><span class="n">grad</span><span class="p">.</span><span class="n">data</span>
+    <span class="n">params</span><span class="p">.</span><span class="n">grad</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">if</span> <span class="n">prn</span><span class="p">:</span> <span class="k">print</span><span class="p">(</span><span class="n">loss</span><span class="p">.</span><span class="n">item</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">preds</span>
+</code></pre></div></div>
+
+<p>And after many iterations we end up seeing this!</p>
+
+<p><img src="https://media.giphy.com/media/TO54a0jw5j3VWEZFbR/giphy.gif" alt="gif" /></p>
+
+<h3 id="conclusion">Conclusion</h3>
+
+<p>As you can see backpropagation is a pretty simple idea, autograd makes intuitive sense, although it seems like it kind of works by magic.
+In future posts I may explain what actually happens under the hood, so stay tuned! :D</p>
+
+<h4 id="acknowledgements">Acknowledgements</h4>
+<p>This example is ripped off straight from fastAi’s <a href="https://github.com/fastai/fastbook/blob/master/04_mnist_basics.ipynb">course</a>, with my own spin-off explanation, more to come!</p>
+
+<p><img src="https://media.giphy.com/media/SQgbkziuGrNxS/source.gif" alt="gif_snail" /></p>
+:ET

@@ -1,4 +1,4 @@
-I"[<h1 id="the-fastai-revolution--image-classification">The FastAI Revolution &amp; Image Classification</h1>
+I"Y[<h1 id="the-fastai-revolution--image-classification">The FastAI Revolution &amp; Image Classification</h1>
 <p>Hello and welcome to this blog, where I will document things I learn along my AI&amp;ML journey.
 One piece of learning material that has caught my eye is <a href="https://www.fast.ai/">fastAI</a> which includes many courses featuring a Top-Down approach.
 A top-down approach is extremely important for most folks, since without a strong <strong>why</strong> most of us cannot bring ourselves to learn new things.</p>
@@ -51,7 +51,7 @@ Since we do not want for model training to die right at the end of a very length
 </code></pre></div></div>
 
 <h3 id="buidling-the-dataloader">Buidling the DataLoader</h3>
-<p>Now the FastAI magic is really showing, making DataLoading a seemingly easy task, at least when training on only one GPU machine.|</p>
+<p>Now the FastAI magic is really showing, making DataLoading a seemingly easy task, at least when training on only one GPU machine.</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">birds</span> <span class="o">=</span> <span class="n">DataBlock</span><span class="p">(</span>
     <span class="n">blocks</span><span class="o">=</span><span class="p">(</span><span class="n">ImageBlock</span><span class="p">,</span> <span class="n">CategoryBlock</span><span class="p">),</span> <span class="c1"># images, classifying task
@@ -70,7 +70,7 @@ Since we do not want for model training to die right at the end of a very length
     </ul>
   </li>
   <li>get_items: Function that supplies ImageBlock with image file paths (function showcased above)</li>
-  <li>splitter: How we split the data, for reliability we set a seed so that the experiment can be reproduced reliably by others (splitting the data the same way every time)</li>
+  <li>splitter: How we split the data, for reproducibility we set a seed so that the experiment can be reproduced reliably by others (splitting the data the same way every time)</li>
   <li>get_y: function for getting the CategoryBlock label, in our case the parent folder being the label</li>
   <li>item_tfms: Resize to 128 so we can efficiently batch images in training, (if the model architecture includes adaptive layers, image size does not “matter” as in the model still runs,and we only need to keep image size consistent through the batches, 128 being just a number. HOWEVER below the model declared is a classical resnet which does NOT include adaptive layers, hence 128 is actually a requirement)</li>
 </ul>
@@ -85,7 +85,7 @@ Since we do not want for model training to die right at the end of a very length
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">dls</span><span class="p">.</span><span class="n">valid</span><span class="p">.</span><span class="n">show_batch</span><span class="p">(</span><span class="n">max_n</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">nrows</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </code></pre></div></div>
 
-<p><img src="02_arin_files/02_arin_13_0.png" alt="png" /></p>
+<p><img src="https://i.ibb.co/Wprv5Y9/02-arin-13-0.png" alt="png" /></p>
 
 <h3 id="resize-strategies">Resize strategies</h3>
 
@@ -99,7 +99,7 @@ Aspect ration might be <strong>extremely</strong> important depending on your ty
 <span class="n">dls</span><span class="p">.</span><span class="n">valid</span><span class="p">.</span><span class="n">show_batch</span><span class="p">(</span><span class="n">max_n</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">nrows</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </code></pre></div></div>
 
-<p><img src="02_arin_files/02_arin_15_0.png" alt="png" /></p>
+<p><img src="https://i.ibb.co/Z6kgSjR/02-arin-15-0.png" alt="png" /></p>
 
 <p>And below we can see simple cropping of a bigger image, which sometimes works, but as you can see below, critical image features can be missed. This is why visualization is so important!</p>
 
@@ -108,7 +108,7 @@ Aspect ration might be <strong>extremely</strong> important depending on your ty
 <span class="n">dls</span><span class="p">.</span><span class="n">train</span><span class="p">.</span><span class="n">show_batch</span><span class="p">(</span><span class="n">max_n</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">nrows</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 </code></pre></div></div>
 
-<p><img src="02_arin_files/02_arin_17_0.png" alt="png" /></p>
+<p><img src="https://i.ibb.co/Gc0DMvn/02-arin-17-0.png" alt="png" /></p>
 
 <p>Ok, ok, let’s calm down with the visualizations and just train an actual model. Iteration through model-feedback is better than eternal analysis of the dataset by hand.</p>
 
@@ -215,7 +215,7 @@ X = torch.linalg.solve(A, B) (Triggered internally at  /pytorch/aten/src/ATen/na
 <span class="n">interp</span><span class="p">.</span><span class="n">plot_confusion_matrix</span><span class="p">()</span>
 </code></pre></div></div>
 
-<p><img src="02_arin_files/02_arin_23_1.png" alt="png" /></p>
+<p><img src="https://i.ibb.co/JFx0KWN/02-arin-23-1.png" alt="png" /></p>
 
 <h3 id="data-cleaning-through-model-feedback">Data cleaning through model feedback</h3>
 
@@ -224,7 +224,7 @@ X = torch.linalg.solve(A, B) (Triggered internally at  /pytorch/aten/src/ATen/na
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">interp</span><span class="p">.</span><span class="n">plot_top_losses</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">nrows</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </code></pre></div></div>
 
-<p><img src="02_arin_files/02_arin_25_0.png" alt="png" /></p>
+<p><img src="https://i.ibb.co/M5tvrPx/02-arin-25-0.png" alt="png" /></p>
 
 <p>Of course the cleaning aspect is built-in with a handy jupyter widget to boot!</p>
 
